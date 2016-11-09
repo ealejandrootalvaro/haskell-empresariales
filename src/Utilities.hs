@@ -54,7 +54,3 @@ concatListString (x:xs)
   |xs==[]= x++[]
   |otherwise= x ++ ", " ++concatListString xs
 
-matchesId :: Int -> Menu -> Bool
-matchesId iD menu = case idMenu menu of
-        Nothing -> False
-        Just int -> int == iD
