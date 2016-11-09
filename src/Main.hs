@@ -52,11 +52,25 @@ main = do
 
 
     post "/menus" $ do
-      menu <- (jsonData :: ActionM Menu)
+      menu <- (jsonData :: ActionM Dish)
       response <- liftIO $ try $ insertMenu conn menu
       case response of
         Right _ -> json (Resultado {tipo= Just success, mensaje= Just "Menu agregado"}) >> status created201
         Left e -> json (Resultado {tipo= Just error', mensaje= Just (B.unpack $ D.sqlErrorMsg e)})
+
+--------------------------------------Tipo MENU--------------------------------------
+
+    get "/tipoMenu" $ do
+      variable <- liftIO (getAllDishType conn)
+      json variable
+
+
+------------------------------- RESTAURANT-------------------------------
+
+    get "/restaurantes" $ do
+      variable <- liftIO (getAllRestaurants conn)
+      json variable
+
 
 --------------------------------------CLIENTE-----------------------------------
     post "/clientes" $ do
