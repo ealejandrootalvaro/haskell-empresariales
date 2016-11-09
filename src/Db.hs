@@ -7,20 +7,34 @@ import Domain
 import qualified Database.PostgreSQL.Simple as D
 
 -----------------------------------MENU-----------------------------------------
-getAllMenus :: D.Connection -> IO [Menu]
+getAllMenus :: D.Connection -> IO [Dish]
 getAllMenus c = do
-  list <- (D.query_ c "select * from menu" :: IO [Menu])
+  list <- (D.query_ c "select * from dish" :: IO [Dish])
   return list
 
 
-getMenuById :: D.Connection -> Integer -> IO [Menu]
+getMenuById :: D.Connection -> Integer -> IO [Dish]
 getMenuById conn int = do
-    menu <- (D.query conn "select * from menu where id = ?" (D.Only int) :: IO [Menu])
+    menu <- (D.query conn "select * from dish where id_dish = ?" (D.Only int) :: IO [Dish])
     return menu
 
 insertMenu conn menu = do
-    result <- D.execute conn "insert into menu (name,description,price,restaurant) values (?,?,?,?)" ((name menu), (description menu), (price menu),(restaurant menu))
+    result <- D.execute conn "insert into dish (name_dish,description,price,restaurant,type) values (?,?,?,?,?)" ((name_dish menu), (description menu), (price menu),(restaurant menu),(type_dish menu))
     return result
+
+-----------------------------------Tipo MENU-----------------------------------------
+getAllDishType :: D.Connection -> IO [Dish_type]
+getAllDishType c  = do
+    list <- (D.query_ c "select * from dish_type" :: IO [Dish_type])
+    return list
+
+------------------------------- RESTAURANT-------------------------------
+
+getAllRestaurants :: D.Connection -> IO [Restaurant]
+getAllRestaurants c  = do
+    list <- (D.query_ c "select * from restaurant" :: IO [Restaurant])
+    return list
+
 
 ------------------------------- CLIENT_RESTAURANT-------------------------------
 insertClient conn client = do
