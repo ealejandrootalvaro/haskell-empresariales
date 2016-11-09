@@ -16,9 +16,33 @@ data Resultado= Resultado{tipo :: Maybe String, mensaje :: Maybe String} derivin
 instance ToJSON Resultado
 
 -- Datatypes que representan la base de datos
-data Menu = Menu { idMenu :: Maybe Int, name :: Maybe String, description :: Maybe String, price :: Maybe Int, restaurant :: Maybe Int } deriving (Show,Generic)
-instance ToJSON Menu
-instance FromJSON Menu
+data Dish_type = Dish_type {id_dish_type :: Maybe Int, 
+                            name_dish_type :: Maybe String} 
+                            deriving (Show,Generic)
+                            
+instance ToJSON Dish_type
+instance FromJSON Dish_type 
+
+data Dish = Dish {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  id_dish :: Maybe Int, 
+                  name_dish :: Maybe String, 
+                  description :: Maybe String, 
+                  price :: Maybe Double, 
+                  restaurant :: Maybe Int, 
+                  type_dish :: Maybe Int } 
+                  deriving (Show,Generic)
+                  
+instance ToJSON Dish
+instance FromJSON Dish    
+
+data Restaurant = Restaurant{id_restaurant :: Maybe Int,
+                             name_restaurant :: Maybe String,
+                             description_restaurant :: Maybe String,
+                             email_restaurant :: Maybe String,
+                             admin :: Maybe Int}
+                             deriving (Show,Generic)
+                          
+instance ToJSON Restaurant
+instance FromJSON Restaurant 
 
 data Client= Client{id_user :: Maybe Int,
                     username :: Maybe String,
@@ -52,14 +76,35 @@ instance ToRow Client where
              toField (identification d)
              ]
 
-instance FromRow Menu where
-  fromRow = Menu <$> field <*> field <*> field <*> field <*> field
+instance FromRow Restaurant where
+  fromRow = Restaurant <$> field <*> field <*> field <*> field <*> field 
 
-
-instance ToRow Menu where
-  toRow d = [toField (idMenu d),
-             toField (name d),
-             toField (description d),
-             toField (price d),
-             toField (restaurant d)
+instance ToRow Restaurant where
+  toRow d = [toField (id_restaurant d),
+             toField (name_restaurant d),
+             toField (description_restaurant d),
+             toField (email_restaurant d),
+             toField (admin d)
              ]
+
+instance FromRow Dish_type where
+  fromRow = Dish_type <$> field <*> field
+
+instance ToRow Dish_type where
+  toRow  d = [toField (id_dish_type d), 
+             toField (name_dish_type d)
+             ]
+
+
+instance FromRow Dish where
+  fromRow = Dish <$> field <*> field <*> field <*> field <*> field <*> field
+  
+  
+instance ToRow Dish where
+  toRow d = [toField (id_dish d), 
+            toField (name_dish d), 
+            toField (description d), 
+            toField (price d), 
+            toField (restaurant d), 
+            toField (type_dish d)
+            ]
