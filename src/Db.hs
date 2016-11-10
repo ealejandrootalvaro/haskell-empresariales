@@ -42,7 +42,7 @@ getAllRestaurants c  = do
 
 ------------------------------- CLIENT_RESTAURANT-------------------------------
 insertClient conn client = do
-    result <- D.execute conn "insert into user_restaurant (username,email,password,name,role,phone,identification) values (?,?,?,?,?,?,?)" ((username client),(email client),(password client),(nameUser client),(0 :: Int),(phone client),(identification client))
+    result <- D.execute conn "insert into user_restaurant (username,email,password,name,role,phone,identification,balance) values (?,?,?,?,?,?,?,?)" ((username client),(email client),(password client),(nameUser client),(0 :: Int),(phone client),(identification client),(0::Int))
     return result
 
 getAllClientes :: D.Connection -> IO [Client]
