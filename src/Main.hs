@@ -95,7 +95,7 @@ main = do
       
     post "/recuperarPassword" $ do
       client <- (jsonData :: ActionM Client)
-      resp <- liftIO $ getClientByUsername conn client
+      resp <- liftIO $ getClientByEmail conn client
       
       case resp of
         [] -> json (Resultado {tipo= Just error', mensaje= Just "Usuario no existe"})
