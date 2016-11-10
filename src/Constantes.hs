@@ -19,9 +19,8 @@ error' :: String
 error' = "Error"
 
 connectionStr :: B.ByteString
-connectionStr = "postgres://ndvmdfyexshzni:bXvG8_ldqY9bGEMvDK9qY-tZvF@ec2-54-235-207-226.compute-1.amazonaws.com:5432/de2if8v7djdfmi"
 -- Conexion a la base de datos de pago
---connectionStr = "postgresql://postgres:94cbd72b4e4133f3417a61adf9a418b1@138.197.15.163:5454/restaurant"
+connectionStr = "postgresql://postgres:94cbd72b4e4133f3417a61adf9a418b1@138.197.15.163:5454/restaurant"
 puerto :: Int
 puerto = 8087
 
