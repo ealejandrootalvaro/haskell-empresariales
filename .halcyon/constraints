@@ -53,7 +53,7 @@ scotty-0.9.1
 semigroups-0.16.0.1
 simple-sendfile-0.2.18
 stm-2.4.4
-streaming-commons-0.1.9.1
+
 stringsearch-0.3.6.5
 syb-0.4.4
 template-haskell-2.9.0.0
@@ -78,3 +78,6 @@ zlib-0.5.4.2
 postgresql-simple-0.5.0.0
 postgresql-simple-url-0.1.0.1
 http-4000.2.23
+HaskellNet-SSL-0.3.3.0
+HaskellNet-0.5.1
+conduit-1.2.7
