@@ -22,6 +22,10 @@ insertMenu conn menu = do
     result <- D.execute conn "insert into dish (name_dish,description,price,restaurant,type) values (?,?,?,?,?)" ((name_dish menu), (description menu), (price menu),(restaurant menu),(type_dish menu))
     return result
 
+updateMenu conn menu = do 
+    result <- D.execute conn "UPDATE dish SET name_dish=?, description=?, price=?, restaurant=?, type=? WHERE id_dish=?" ((name_dish menu), (description menu), (price menu), (restaurant menu), (type_dish menu), (id_dish menu))
+    return result
+
 -----------------------------------Tipo MENU-----------------------------------------
 getAllDishType :: D.Connection -> IO [Dish_type]
 getAllDishType c  = do
