@@ -25,6 +25,9 @@ import qualified Data.ByteString.Char8 as B
 import qualified Database.PostgreSQL.Simple as D
 import qualified Network.Wai.Middleware.Cors as C
 
+import qualified Data.Text as T
+import qualified Data.Text.Lazy as A
+
 main = do
 
   putStrLn "Starting Server..."
@@ -88,6 +91,19 @@ main = do
     get "/clientes" $ do
       variable <- liftIO (getAllClientes conn)
       json variable
+      
+      
+    post "/recuperarPassword" $ do
+      client <- (jsonData :: ActionM Client)
+      resp <- liftIO $ getClientByUsername conn client
+      
+      case resp of
+        [] -> json (Resultado {tipo= Just error', mensaje= Just "Usuario no existe"})
+        (x:[]) -> do
+          let contr = take 8 $ randomString 1
+          res <- liftIO $ sendMensaje (fromJust (email x)) contr 
+          json (Resultado {tipo= Just success, mensaje= Just "Nueva contraseña enviada al correo"})
+
 
 
     put "/iniciarSesion" $ do
