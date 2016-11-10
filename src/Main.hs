@@ -60,6 +60,14 @@ main = do
       case response of
         Right _ -> json (Resultado {tipo= Just success, mensaje= Just "Menu agregado"}) >> status created201
         Left e -> json (Resultado {tipo= Just error', mensaje= Just (B.unpack $ D.sqlErrorMsg e)})
+        
+        
+    put "/actualizarMenu" $ do
+      menu <- (jsonData :: ActionM Dish)
+      response <- liftIO $ try $ updateMenu conn menu
+      case response of
+        Right _ -> json (Resultado {tipo= Just success, mensaje= Just "Menu actualizado"}) >> status created201
+        Left e -> json (Resultado {tipo= Just error', mensaje= Just (show $ D.sqlErrorMsg e)})
 
 --------------------------------------Tipo MENU--------------------------------------
 
