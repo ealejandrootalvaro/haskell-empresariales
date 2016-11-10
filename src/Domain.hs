@@ -52,7 +52,9 @@ data Client= Client{id_user :: Maybe Int,
                     role :: Maybe Int,
                     token :: Maybe String,
                     phone :: Maybe String,
-                    identification :: Maybe String }
+                    balance :: Maybe Int,
+                    identification :: Maybe String
+                     }
                     deriving (Show,Generic)
 
 -- Poder convertir de datatype a JSON
@@ -62,7 +64,7 @@ instance FromJSON Client
 
 -- Para poder convertir de fila de base de datos a datatype y viceversa
 instance FromRow Client where
-  fromRow = Client <$> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field
+  fromRow = Client <$> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field
 
 instance ToRow Client where
   toRow d = [toField (id_user d),
@@ -73,6 +75,7 @@ instance ToRow Client where
              toField (role d),
              toField (token d),
              toField (phone d),
+             toField (balance d),
              toField (identification d)
              ]
 
