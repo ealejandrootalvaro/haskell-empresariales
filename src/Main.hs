@@ -1,4 +1,4 @@
-  {-# LANGUAGE OverloadedStrings, DeriveGeneric, ScopedTypeVariables, ViewPatterns #-}
+ {-# LANGUAGE OverloadedStrings, DeriveGeneric, ScopedTypeVariables, ViewPatterns #-}
 
 module Main where
 
@@ -7,6 +7,9 @@ import Db
 import Domain
 import Constantes
 import Utilities
+import qualified Entities.Client as Client
+import qualified Entities.Dish as Dish
+import qualified Entities.Restaurant as Restaurant
 --import Data.Monoid ((<>))
 --import Data.Aeson (FromJSON, ToJSON)
 
@@ -27,6 +30,7 @@ import qualified Network.Wai.Middleware.Cors as C
 
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as A
+
 
 main = do
 
@@ -55,25 +59,24 @@ main = do
 
 
     post "/menus" $ do
-      menu <- (jsonData :: ActionM Dish)
+      menu <- (jsonData :: ActionM Dish.Dish)
       response <- liftIO $ try $ insertMenu conn menu
       case response of
         Right _ -> json (Resultado {tipo= Just success, mensaje= Just "Menu agregado"}) >> status created201
         Left e -> json (Resultado {tipo= Just error', mensaje= Just (B.unpack $ D.sqlErrorMsg e)})
-        
-        
-    put "/actualizarMenu" $ do
-      menu <- (jsonData :: ActionM Dish)
-      response <- liftIO $ try $ updateMenu conn menu
-      case response of
-        Right _ -> json (Resultado {tipo= Just success, mensaje= Just "Menu actualizado"}) >> status created201
-        Left e -> json (Resultado {tipo= Just error', mensaje= Just (show $ D.sqlErrorMsg e)})
 
 --------------------------------------Tipo MENU--------------------------------------
 
     get "/tipoMenu" $ do
       variable <- liftIO (getAllDishType conn)
       json variable
+
+    put "/actualizarMenu" $ do
+      menu <- (jsonData :: ActionM Dish.Dish)
+      response <- liftIO $ try $ updateMenu conn menu
+      case response of
+        Right _ -> json (Resultado {tipo= Just success, mensaje= Just "Menu actualizado"}) >> status created201
+        Left e -> json (Resultado {tipo= Just error', mensaje= Just (show $ D.sqlErrorMsg e)})
 
 
 ------------------------------- RESTAURANT-------------------------------
@@ -85,7 +88,7 @@ main = do
 
 --------------------------------------CLIENTE-----------------------------------
     post "/clientes" $ do
-      client <- (jsonData :: ActionM Client)
+      client <- (jsonData :: ActionM Client.Client)
       case (validarCliente client) of
         []->do
           response <- liftIO $ try $ insertClient conn client
@@ -101,21 +104,34 @@ main = do
       json variable
       
       
+    put "/clientes" $ do
+      client <- (jsonData :: ActionM Client.Client)
+      case (validarCliente client) of
+        []->do
+          response <- liftIO $ try $ updateClient conn client
+          case response of
+            Right _ -> json (Resultado {tipo= Just success, mensaje= Just "Informacion modificada"}) >> status created201
+            Left e -> json (Resultado {tipo= Just error', mensaje= Just (B.unpack $ D.sqlErrorMsg e)})
+        xs->do
+          json (Resultado {tipo= Just error', mensaje= Just ("Campos invalidos: " ++ (concatListString xs))})
+
+
     post "/recuperarPassword" $ do
-      client <- (jsonData :: ActionM Client)
+      client <- (jsonData :: ActionM Client.Client)
       resp <- liftIO $ getClientByEmail conn client
       
       case resp of
         [] -> json (Resultado {tipo= Just error', mensaje= Just "Usuario no existe"})
         (x:[]) -> do
           let contr = take 8 $ randomString 1
-          res <- liftIO $ sendMensaje (fromJust (email x)) contr 
+          up <- liftIO $ actualizarPassword conn x contr
+          res <- liftIO $ sendMensaje (fromJust (Client.email x)) contr 
           json (Resultado {tipo= Just success, mensaje= Just "Nueva contraseña enviada al correo"})
 
 
 
     put "/iniciarSesion" $ do
-      client <- (jsonData :: ActionM Client)
+      client <- (jsonData :: ActionM Client.Client)
       resp <- liftIO $ getClient conn client
       case resp of
           [] ->json (Resultado {tipo= Just error', mensaje= Just "Usuario o contraseña incorrecto"})
@@ -128,7 +144,7 @@ main = do
               Left e -> json (Resultado {tipo= Just error', mensaje= Just (B.unpack $ D.sqlErrorMsg e)})
 
     put "/cerrarSesion" $ do
-      client <- (jsonData :: ActionM Client)
+      client <- (jsonData :: ActionM Client.Client)
       resp <- liftIO $ getClientByToken conn client
       case resp of
         []->json (Resultado {tipo= Just error', mensaje= Just "Token invalido"})
@@ -139,6 +155,6 @@ main = do
             Left e -> json (Resultado {tipo= Just error', mensaje= Just (B.unpack $ D.sqlErrorMsg e)})
 
 
-filterToken :: [Client]->[String]
+filterToken :: [Client.Client]->[String]
 filterToken []=[]
-filterToken (x:xs)= (fromJust(token x)):filterToken xs
+filterToken (x:xs)= (fromJust(Client.token x)):filterToken xs

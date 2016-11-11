@@ -3,6 +3,7 @@
 
 module Utilities where
 import Domain
+import qualified Entities.Client as Client
 import System.Random
 import Text.Regex.Posix
 import Data.Maybe
@@ -30,21 +31,21 @@ validarCliente client=
     filter (\x -> (length x)>0) (validarTelefono:validarEmail:validarIdetificacion:[])
     where
       validarIdetificacion=
-        if isJust (identification client)
+        if isJust (Client.identification client)
           then
-            if regexMatch (fromJust (identification client)) patternNum
+            if regexMatch (fromJust (Client.identification client)) patternNum
               then ""
               else "identification"
           else ""
       validarTelefono=
-        if isJust (phone client)
+        if isJust (Client.phone client)
           then
-            if regexMatch (fromJust (phone client)) patternNum
+            if regexMatch (fromJust (Client.phone client)) patternNum
               then ""
               else "phone"
           else ""
       validarEmail=
-          if regexMatch (fromJust (email client)) patternEmail
+          if regexMatch (fromJust (Client.email client)) patternEmail
             then ""
             else "email"
 ---------------------------------otros------------------------------------------
@@ -53,4 +54,3 @@ concatListString []=[]
 concatListString (x:xs)
   |xs==[]= x++[]
   |otherwise= x ++ ", " ++concatListString xs
-
