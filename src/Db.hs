@@ -31,7 +31,7 @@ getAllDishType c  = do
     list <- (D.query_ c "select * from dish_type" :: IO [Dish.Dish_type])
     return list
 
-updateMenu conn menu = do 
+updateMenu conn menu = do
     result <- D.execute conn "UPDATE dish SET name_dish=?, description=?, price=?, restaurant=?, type=? WHERE id_dish=?" ((Dish.name_dish menu), (Dish.description menu), (Dish.price menu), (Dish.restaurant menu), (Dish.type_dish menu), (Dish.id_dish menu))
     return result
 
