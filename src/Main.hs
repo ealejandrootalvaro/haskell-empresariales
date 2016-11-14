@@ -27,6 +27,7 @@ import qualified Network.Wai.Middleware.Cors as C
 import qualified Entities.Client as Client
 import qualified Entities.Dish as Dish
 import qualified Entities.Restaurant as Restaurant
+import qualified Entities.Delivery as Delivery
 
 
 main = do
@@ -151,3 +152,11 @@ main = do
           case response of
             Right _ -> json (Resultado {tipo= Just success, mensaje= Just "Sesion cerrada"}) >> status created201
             Left e -> json (sqlError e)
+------------------------------------DOMICILIOS----------------------------------
+    post "/domicilio" $ do
+        delivery <- (jsonData :: ActionM Delivery.Delivery)
+        let orders=(Delivery.orders delivery)
+        let dishes= extractDishFromOrders orders
+        id_delivery <- liftIO $ insertDelivery conn delivery
+      --  prices_dish <- liftIO $ getPricesDish conn dishes
+        json (Resultado {tipo= Just success, mensaje= Just (show (dishes))})>> status created201

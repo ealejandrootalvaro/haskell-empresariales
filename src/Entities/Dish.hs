@@ -40,7 +40,6 @@ instance ToRow Dish_type where
              toField (name_dish_type d)
              ]
 
-
 instance FromRow Dish where
   fromRow = Dish <$> field <*> field <*> field <*> field <*> field <*> field
 

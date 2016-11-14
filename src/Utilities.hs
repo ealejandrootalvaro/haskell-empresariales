@@ -15,6 +15,8 @@ import qualified Database.PostgreSQL.Simple as D
 import qualified Data.ByteString.Char8 as B
 import qualified Entities.Client as Client
 import qualified Entities.Dish as Dish
+import qualified Entities.OrderRestaurant as OrderRestaurant
+
 -------------------------------aleatoriedad-------------------------------------
 randomString :: Int -> String
 randomString gen=take 30 $ randomRs ('a','z') (mkStdGen gen) :: String
@@ -77,7 +79,7 @@ smtpTest recipient newPassword = doSMTPSTARTTLS "smtp.gmail.com" $ \c -> do
 
 sendMensaje :: String -> String -> IO ()
 sendMensaje recipient newPassword = (smtpTest recipient newPassword) >> return ()
----------------------------------otros------------------------------------------
+---------------------------------ExcepcionesSQL------------------------------------------
 
 sqlError :: D.SqlError -> Resultado
 sqlError err=
@@ -95,7 +97,10 @@ extractFieldSqlError (x:xs)
     parentesis err (y:ys)
         |y==')' = err
         |otherwise = parentesis (err++[y]) ys
-
+--------------------------------------------------------------------------------
+extractDishFromOrders (x:xs)
+  |xs==[]=(MyInt {int=fromJust $ OrderRestaurant.dish x}):[]
+  |otherwise=(MyInt {int=fromJust $ OrderRestaurant.dish x}):extractDishFromOrders xs
 
 concatListString :: [String]-> String
 concatListString []=[]

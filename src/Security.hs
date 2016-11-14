@@ -2,7 +2,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 module Security where
---------------------------------Roles------------------------------------------
+---------------------------------Roles------------------------------------------
 roleClient="cliente"
 roleRestaurnt="restaurante"
 roleUser="usuario"
