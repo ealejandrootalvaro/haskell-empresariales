@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
 
-module Constantes where
+module Utilities.Constants where
 import qualified Data.ByteString.Char8 as B
 
 success :: String

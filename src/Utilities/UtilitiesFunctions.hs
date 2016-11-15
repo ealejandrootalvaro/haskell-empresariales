@@ -1,16 +1,23 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
 
-module Utilities where
+module Utilities.UtilitiesFunctions where
 import Domain
+import Db.DbClient
+import Db.DbDish
+import Db.DbDishType
+import Db.DbRestaurant
+import Db.DbDelivery
 import System.Random
 import Text.Regex.Posix
 import Data.Maybe
 import Network.HaskellNet.IMAP.SSL
 import Network.HaskellNet.SMTP.SSL as SMTP
 import Network.HaskellNet.Auth (AuthType(LOGIN))
+import Control.Monad.IO.Class
+
 import qualified Data.Text.Lazy as L
-import qualified Constantes as C
+import qualified Utilities.Constants as C
 import qualified Database.PostgreSQL.Simple as D
 import qualified Data.ByteString.Char8 as B
 import qualified Entities.Client as Client
@@ -97,10 +104,7 @@ extractFieldSqlError (x:xs)
     parentesis err (y:ys)
         |y==')' = err
         |otherwise = parentesis (err++[y]) ys
---------------------------------------------------------------------------------
-extractDishFromOrders (x:xs)
-  |xs==[]=(MyInt {int=fromJust $ OrderRestaurant.dish x}):[]
-  |otherwise=(MyInt {int=fromJust $ OrderRestaurant.dish x}):extractDishFromOrders xs
+------------------------------------Otros---------------------------------------
 
 concatListString :: [String]-> String
 concatListString []=[]
@@ -111,3 +115,24 @@ concatListString (x:xs)
 filterToken :: [Client.Client]->[String]
 filterToken []=[]
 filterToken (x:xs)= (fromJust(Client.token x)):filterToken xs
+
+saveOrders conn delivery (order:orders) total=
+  case orders of
+    []->do
+      price <- liftIO $ getPricesDish conn order
+      let total_price= (getFloat $ head price) * (fromIntegral $ fromJust $ OrderRestaurant.amount order)
+      result <- liftIO $ insertOrderRestaurant conn (createOrder order delivery total_price)
+      return (total + total_price)
+    orders->do
+      price <- liftIO $ getPricesDish conn order
+      let total_price= (getFloat $ head price) * (fromIntegral $ fromJust $ OrderRestaurant.amount order)
+      result <- liftIO $ insertOrderRestaurant conn (createOrder order delivery total_price)
+      saveOrders conn delivery orders (total + total_price)
+
+
+createOrder order delivery total_price=
+  OrderRestaurant.OrderRestaurant { OrderRestaurant.dish=(OrderRestaurant.dish order)
+                                    ,OrderRestaurant.amount=(OrderRestaurant.amount order)
+                                    ,OrderRestaurant.tipo=(Just 0)
+                                    ,OrderRestaurant.delivery=(Just delivery)
+                                    ,OrderRestaurant.price= (Just total_price)}

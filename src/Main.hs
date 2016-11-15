@@ -2,10 +2,14 @@
 
 module Main where
 
-import Db
+import Db.DbClient
+import Db.DbDish
+import Db.DbDishType
+import Db.DbRestaurant
+import Db.DbDelivery
+import Utilities.Constants
+import Utilities.UtilitiesFunctions
 import Domain
-import Utilities
-import Constantes
 import Web.Scotty
 import Data.Maybe
 import Control.Monad
@@ -27,6 +31,7 @@ import qualified Network.Wai.Middleware.Cors as C
 import qualified Entities.Client as Client
 import qualified Entities.Dish as Dish
 import qualified Entities.Restaurant as Restaurant
+import qualified Entities.OrderRestaurant as OrderRestaurant
 import qualified Entities.Delivery as Delivery
 
 
@@ -156,7 +161,7 @@ main = do
     post "/domicilio" $ do
         delivery <- (jsonData :: ActionM Delivery.Delivery)
         let orders=(Delivery.orders delivery)
-        let dishes= extractDishFromOrders orders
         id_delivery <- liftIO $ insertDelivery conn delivery
-      --  prices_dish <- liftIO $ getPricesDish conn dishes
-        json (Resultado {tipo= Just success, mensaje= Just (show (dishes))})>> status created201
+        let delivery= (getInt $ head id_delivery)
+        total <- saveOrders conn delivery orders 0
+        json (ResultadoDomiclio {tipo= Just success, total= Just (show total)}) >> status created201

@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
 
-module Security where
+module Security.Security where
 ---------------------------------Roles------------------------------------------
 roleClient="cliente"
 roleRestaurnt="restaurante"
