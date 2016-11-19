@@ -162,6 +162,9 @@ main = do
         delivery <- (jsonData :: ActionM Delivery.Delivery)
         let orders=(Delivery.orders delivery)
         id_delivery <- liftIO $ insertDelivery conn delivery
-        let delivery= (getInt $ head id_delivery)
-        total <- saveOrders conn delivery orders 0
-        json (ResultadoDomiclio {tipo= Just success, total= Just (show total)}) >> status created201
+        case id_delivery of
+        [] -> json (Resultado {tipo= Just error', mensaje = Just "Error creando el domicilio"})
+        (x:[]) -> do
+            let delivery= (getInt $ x)
+            total <- saveOrders conn delivery orders 0
+            json (ResultadoDomiclio {tipo= Just success, total= Just (show total)}) >> status created201
