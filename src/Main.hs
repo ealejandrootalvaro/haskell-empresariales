@@ -33,6 +33,7 @@ import qualified Entities.Dish as Dish
 import qualified Entities.Restaurant as Restaurant
 import qualified Entities.OrderRestaurant as OrderRestaurant
 import qualified Entities.Delivery as Delivery
+import qualified Entities.Reservations as Reservations
 
 
 main = do
