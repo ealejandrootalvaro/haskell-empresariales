@@ -98,7 +98,20 @@ main = do
     post "/reservacionesPorFecha" $ do
       rango <- (jsonData :: ActionM Reservations.TimeRange)
       reservaciones <- liftIO (getReservationsByDate conn rango)
-      json reservaciones 
+      json reservaciones
+      
+    post "/reservaciones" $ do
+      reservacion <- (jsonData :: ActionM Reservations.Reservation)
+      response <- liftIO $ try $ insertReservation conn reservacion
+      case response of
+        Right _ -> json (Resultado {tipo= Just success, mensaje= Just "reservacion agregada"}) >> status created201
+        Left e -> json (Resultado {tipo= Just error', mensaje= Just (B.unpack $ D.sqlErrorMsg e)})
+
+    post "/menusPagados" $ do
+      rango <- (jsonData :: ActionM Reservations.TimeRange)
+      menusPagados <- liftIO (getDishByReservations conn rango)
+      json menusPagados
+      
 ---------------------------------CLIENTE----------------------------------------
     post "/clientes" $ do
       client <- (jsonData :: ActionM Client.Client)
