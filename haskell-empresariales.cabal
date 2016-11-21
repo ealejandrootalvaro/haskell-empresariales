@@ -23,4 +23,5 @@ executable hello-scotty
                      , wai-cors
                      , HaskellNet
                      , HaskellNet-SSL
+                     , time
   hs-source-dirs:    src
