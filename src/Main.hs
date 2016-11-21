@@ -10,6 +10,7 @@ import Data.Maybe
 import Db.DbClient
 import Db.DbDishType
 import Db.DbDelivery
+import Db.DbReservations
 import Control.Monad
 import System.Random
 import Db.DbRestaurant
