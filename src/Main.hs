@@ -2,38 +2,38 @@
 
 module Main where
 
-import Db.DbClient
-import Db.DbDish
-import Db.DbDishType
-import Db.DbRestaurant
-import Db.DbDelivery
-import Utilities.Constants
-import Utilities.UtilitiesFunctions
+{-*-}
 import Domain
+import Db.DbDish
 import Web.Scotty
 import Data.Maybe
+import Db.DbClient
+import Db.DbDishType
+import Db.DbDelivery
 import Control.Monad
 import System.Random
+import Db.DbRestaurant
 import Control.Exception
 import System.Environment
+import Utilities.Constants
 import Control.Monad.IO.Class
-import Network.HTTP.Types.Status
-import Database.PostgreSQL.Simple.URL
-import Database.PostgreSQL.Simple.Errors
-import Data.Text.Lazy.Encoding (decodeUtf8)
-
 import qualified Data.Text as T
+import Network.HTTP.Types.Status
+import Utilities.UtilitiesFunctions
 import qualified Data.Text.Lazy as A
+import Database.PostgreSQL.Simple.URL
+import qualified Entities.Dish as Dish
+import Database.PostgreSQL.Simple.Errors
+import qualified Entities.Client as Client
+import Data.Text.Lazy.Encoding (decodeUtf8)
 import qualified Data.ByteString.Char8 as B
+import qualified Entities.Delivery as Delivery
 import qualified Database.PostgreSQL.Simple as D
 import qualified Network.Wai.Middleware.Cors as C
-
-import qualified Entities.Client as Client
-import qualified Entities.Dish as Dish
 import qualified Entities.Restaurant as Restaurant
-import qualified Entities.OrderRestaurant as OrderRestaurant
-import qualified Entities.Delivery as Delivery
 import qualified Entities.Reservations as Reservations
+import qualified Entities.OrderRestaurant as OrderRestaurant
+
 
 
 main = do
