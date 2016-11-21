@@ -92,6 +92,13 @@ main = do
       variable <- liftIO (getAllRestaurants conn)
       json variable
 
+------------------------------- RESERVATION -------------------------------
+
+
+    post "/reservacionesPorFecha" $ do
+      rango <- (jsonData :: ActionM Reservations.TimeRange)
+      reservaciones <- liftIO (getReservationsByDate conn rango)
+      json reservaciones 
 ---------------------------------CLIENTE----------------------------------------
     post "/clientes" $ do
       client <- (jsonData :: ActionM Client.Client)
