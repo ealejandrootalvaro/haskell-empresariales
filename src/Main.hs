@@ -10,16 +10,17 @@ import Data.Maybe
 import Db.DbClient
 import Db.DbDishType
 import Db.DbDelivery
-import Db.DbReservations
 import Control.Monad
 import System.Random
 import Db.DbRestaurant
+import Db.DbReservations
 import Control.Exception
 import System.Environment
 import Utilities.Constants
 import Control.Monad.IO.Class
 import qualified Data.Text as T
 import Network.HTTP.Types.Status
+import Network.HTTP.Types.Method
 import Utilities.UtilitiesFunctions
 import qualified Data.Text.Lazy as A
 import Database.PostgreSQL.Simple.URL
