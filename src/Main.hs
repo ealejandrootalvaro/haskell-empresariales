@@ -35,6 +35,8 @@ import qualified Entities.Restaurant as Restaurant
 import qualified Entities.Reservations as Reservations
 import qualified Entities.OrderRestaurant as OrderRestaurant
 
+politicaCors = C.CorsResourcePolicy Nothing [methodGet,methodPost,methodPut,methodDelete] ["content-type"] Nothing Nothing False False True
+    
 
 
 main = do
@@ -44,7 +46,7 @@ main = do
   env <- getEnvironment
   let port = maybe puerto read $ lookup "PORT" env
   scotty port $ do
-    middleware C.simpleCors
+    middleware (C.cors (const $ Just politicaCors))
 
     get "/" $ do
       text ("Bienvenido servicios REST construidos con Haskell")
